@@ -6,6 +6,8 @@ import Home from "./pages/Home";
 import { useSelector } from "react-redux";
 import Layout from "./components/Layout";
 import Profile from "./pages/Profile";
+import Tweet from "./pages/Tweet";
+import CreateTweet from "./pages/CreateTweet";
 
 export default function Router() {
     const user = useSelector((state) => state.auth.user);
@@ -16,10 +18,7 @@ export default function Router() {
                 <Routes>
                     {user === null ? (
                         <>
-                            <Route
-                                path="*"
-                                element={<Navigate to="/login" />}
-                            />
+                            <Route path="*" element={<Navigate to="/login" />} />
                             <Route path="/register" element={<Register />} />
                             <Route path="/login" element={<Login />} />
                         </>
@@ -28,6 +27,8 @@ export default function Router() {
                             <Route element={<Layout />}>
                                 <Route path="*" element={<Navigate to="/" />} />
                                 <Route path="/" element={<Home />} />
+                                <Route path="/tweet/create" element={<CreateTweet />} />
+                                <Route path="/tweet/:id" element={<Tweet />} />
                                 <Route path="/profile" element={<Profile />} />
                             </Route>
                         </>

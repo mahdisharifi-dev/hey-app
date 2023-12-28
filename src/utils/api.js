@@ -10,6 +10,10 @@ const API = {
     },
     tweet: {
         list: `${BASE_URL}/tweets`,
+        create: `${BASE_URL}/tweets`,
+        single: (id) => `${BASE_URL}/tweets/${id}`,
+        delete: (id) => `${BASE_URL}/tweets/${id}`,
+        categories: `${BASE_URL}/tweets/categories`,
     },
 };
 
@@ -43,6 +47,7 @@ function post(url, body, callback) {
         headers: {
             "Content-Type": "application/json",
             Accept: "application/json",
+            Authorization: `Bearer ${authToken.get()}`,
         },
         body: JSON.stringify(body),
     })
@@ -58,5 +63,24 @@ function post(url, body, callback) {
         });
 }
 
-export { get, post, responseValidator };
+function del(url, callback) {
+    let status;
+    fetch(url, {
+        method: "delete",
+        headers: {
+            "Content-Type": "application/json",
+            Accept: "application/json",
+            Authorization: `Bearer ${authToken.get()}`,
+        },
+    })
+        .then((response) => {
+            status = response.status;
+            return response.json();
+        })
+        .then((data) => {
+            callback(data, status);
+        });
+}
+
+export { get, post, del, responseValidator };
 export default API;
