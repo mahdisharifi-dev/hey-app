@@ -4,9 +4,16 @@ import authToken from "./utils/storage";
 import API, { get, responseValidator } from "./utils/api";
 import { useDispatch } from "react-redux";
 import { setUser } from "./redux/slices/authSlice";
+import { useLocation } from "react-router-dom";
+import { setSidebar } from "./redux/slices/layoutSlice";
 
 function App() {
     const dispatch = useDispatch();
+    const location = useLocation();
+
+    useEffect(() => {
+        dispatch(setSidebar(false));
+    }, [location.pathname]);
 
     useEffect(() => {
         if (authToken.get()) {
