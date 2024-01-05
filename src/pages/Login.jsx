@@ -8,8 +8,10 @@ import API, { get, post, responseValidator } from "../utils/api";
 import authToken from "../utils/storage";
 import { useDispatch } from "react-redux";
 import { setUser } from "../redux/slices/authSlice";
+import { toast } from "react-toastify";
 
 export default function Login() {
+    const [loading, setLoading] = useState(false);
     const [errors, setErrors] = useState({
         email: "",
         password: "",
@@ -43,26 +45,31 @@ export default function Login() {
 
     const handleSubmitForm = (e) => {
         e.preventDefault();
+        setLoading(true);
         const email = e.target.elements.email.value;
         const password = e.target.elements.password.value;
         if (handleValidateForm({ email, password })) {
-            post(
-                API.auth.login,
-                { email: email, password: password },
-                (data, status) => {
-                    authToken.set(data.token);
-                    if (responseValidator(status)) {
-                        get(API.auth.me, (data, status) => {
-                            if (responseValidator(status)) {
-                                dispatch(setUser(data));
-                                navigate("/");
-                            } else {
-                                console.log("error");
-                            }
-                        });
+            post(API.auth.login, { email: email, password: password }, (data, status) => {
+                authToken.set(data.token);
+                if (responseValidator(status)) {
+                    get(API.auth.me, (data, status) => {
+                        if (responseValidator(status)) {
+                            setLoading(false);
+                            dispatch(setUser(data));
+                            navigate("/");
+                        } else {
+                            setLoading(false);
+                        }
+                    });
+                } else {
+                    setLoading(false);
+                    if (status === 401) {
+                        toast.error("Email or password are wrong!");
                     }
                 }
-            );
+            });
+        } else {
+            setLoading(false);
         }
     };
 
@@ -93,7 +100,9 @@ export default function Login() {
                         error={errors.password}
                         onChange={() => setErrors({ ...errors, password: "" })}
                     />
-                    <Button type="submit">Login</Button>
+                    <Button type="submit" disabled={loading}>
+                        Login
+                    </Button>
                     <Link
                         to="/register"
                         className="text-teal-500 hover:text-teal-600 transition-colors"

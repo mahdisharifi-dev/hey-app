@@ -8,6 +8,7 @@ import API, { post, responseValidator } from "../utils/api";
 
 export default function Register() {
     const navigate = useNavigate();
+    const [loading, setLoading] = useState(false);
 
     const [errors, setErrors] = useState({
         name: "",
@@ -43,12 +44,20 @@ export default function Register() {
                 password: "Password is required!",
             }));
         } else {
-            if (data.password !== data.confirmation_password) {
+            if (data.password.length < 8) {
                 validate = false;
                 setErrors((prev) => ({
                     ...prev,
-                    password: "Password confirmation is no correct!",
+                    password: "Password should be at least 8 characters!",
                 }));
+            } else {
+                if (data.password !== data.confirmation_password) {
+                    validate = false;
+                    setErrors((prev) => ({
+                        ...prev,
+                        password: "Password confirmation is no correct!",
+                    }));
+                }
             }
         }
 
@@ -57,14 +66,12 @@ export default function Register() {
 
     const handleSubmitForm = (e) => {
         e.preventDefault();
+        setLoading(true);
         const name = e.target.elements.name.value;
         const email = e.target.elements.email.value;
         const password = e.target.elements.password.value;
-        const confirmation_password =
-            e.target.elements.confirmation_password.value;
-        if (
-            handleValidateForm({ name, email, password, confirmation_password })
-        ) {
+        const confirmation_password = e.target.elements.confirmation_password.value;
+        if (handleValidateForm({ name, email, password, confirmation_password })) {
             post(
                 API.auth.register,
                 {
@@ -74,13 +81,14 @@ export default function Register() {
                     password_confirmation: confirmation_password,
                 },
                 (data, status) => {
+                    setLoading(false);
                     if (responseValidator(status)) {
                         navigate("/login");
-                    } else {
-                        console.log("Error");
                     }
                 }
             );
+        } else {
+            setLoading(false);
         }
     };
 
@@ -127,7 +135,9 @@ export default function Register() {
                         error={errors.password}
                         onChange={() => setErrors({ ...errors, password: "" })}
                     />
-                    <Button type="submit">Register</Button>
+                    <Button type="submit" disabled={loading}>
+                        Register
+                    </Button>
                     <Link
                         to="/login"
                         className="text-teal-500 hover:text-teal-600 transition-colors"

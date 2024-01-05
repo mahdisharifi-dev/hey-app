@@ -6,7 +6,7 @@ import { useSelector } from "react-redux";
 export default function Layout() {
     const sidebar = useSelector((state) => state.layout.sidebar);
     return (
-        <div className="h-screen">
+        <div className="h-[100dvh]">
             <div className="container h-full">
                 <div className="flex items-start gap-4 h-full">
                     {/* Desktop Sidebar */}
