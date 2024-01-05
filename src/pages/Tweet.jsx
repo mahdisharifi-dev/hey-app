@@ -5,6 +5,7 @@ import API, { get, post, responseValidator } from "../utils/api";
 import TweetCard from "../components/TweetCard";
 import TweetForm from "../components/TweetForm";
 import { toast } from "react-toastify";
+import Loader from "../components/Loader";
 
 export default function Tweet() {
     const [tweet, setTweet] = useState(undefined);
@@ -38,7 +39,7 @@ export default function Tweet() {
     return (
         <div className="h-full flex flex-col">
             <PageTitle title="Tweet" />
-            <div className="overflow-auto no-scrollbar">
+            <div className="overflow-auto no-scrollbar h-full">
                 {tweet ? (
                     <div>
                         <TweetCard tweet={tweet} />
@@ -56,7 +57,7 @@ export default function Tweet() {
                             : tweet.replies.map((item) => <TweetCard key={item.id} tweet={item} />)}
                     </div>
                 ) : (
-                    "Loading"
+                    <Loader />
                 )}
             </div>
         </div>

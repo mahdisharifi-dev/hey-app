@@ -1,4 +1,5 @@
 import {
+    ArrowPathIcon,
     ChatBubbleBottomCenterTextIcon,
     HeartIcon,
     PencilSquareIcon,
@@ -7,20 +8,24 @@ import {
 import moment from "moment";
 import { useState } from "react";
 import { useSelector } from "react-redux";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import API, { del, responseValidator } from "../utils/api";
 import { toast } from "react-toastify";
+import Like from "./Like";
 
 export default function TweetCard(props) {
     const user = useSelector((state) => state.auth.user);
     const [loading, setLoading] = useState(false);
+    const navigate = useNavigate();
 
     const handleDelete = (e) => {
         e.preventDefault();
         setLoading(true);
         del(API.tweet.delete(props.tweet.id), (data, status) => {
+            setLoading(false);
             if (responseValidator(status)) {
                 toast.success("Tweet Deleted Successfully.");
+                props.onDelete(props.tweet.id);
             }
         });
     };
@@ -39,10 +44,11 @@ export default function TweetCard(props) {
                                 <div className="flex items-center gap-2 justify-between w-full">
                                     <h3 className="text-gray-800">{props.tweet.user.name}</h3>
                                     <div className="flex items-center gap-2">
-                                        <div className="flex items-center gap-1">
-                                            <HeartIcon className="w-5 h-5 text-rose-600" />
-                                            <p className="text-sm text-rose-600">50</p>
-                                        </div>
+                                        <Like
+                                            id={props.tweet.id}
+                                            liked={props.tweet.liked}
+                                            count={props.tweet.likes_count}
+                                        />
                                         <div className="flex items-center gap-1">
                                             <ChatBubbleBottomCenterTextIcon className="w-5 h-5 text-gray-500" />
                                             <p className="text-sm text-gray-500">
@@ -60,10 +66,30 @@ export default function TweetCard(props) {
                                     </p>
                                     {props.tweet.user.id === user.id && (
                                         <>
-                                            <div className="cursor-pointer" onClick={handleDelete}>
-                                                <TrashIcon className="w-5 h-5 text-rose-600" />
-                                            </div>
-                                            <div>
+                                            {loading ? (
+                                                <div
+                                                    onClick={(e) => {
+                                                        e.preventDefault();
+                                                    }}
+                                                    className="animate-spin"
+                                                >
+                                                    <ArrowPathIcon className="w-5 h-5 text-gray-500" />
+                                                </div>
+                                            ) : (
+                                                <div
+                                                    className="cursor-pointer"
+                                                    onClick={handleDelete}
+                                                >
+                                                    <TrashIcon className="w-5 h-5 text-rose-600" />
+                                                </div>
+                                            )}
+
+                                            <div
+                                                onClick={(e) => {
+                                                    e.preventDefault();
+                                                    navigate(`/tweet/edit/${props.tweet.id}`);
+                                                }}
+                                            >
                                                 <PencilSquareIcon className="w-5 h-5 text-gray-500" />
                                             </div>
                                         </>

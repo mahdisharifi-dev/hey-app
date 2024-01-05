@@ -16,7 +16,7 @@ export default function Sidebar(props) {
     return (
         <div
             className={`flex flex-col flex-1 rounded-lg bg-white p-4 pb-0 h-full ${
-                props.mobile ? "w-full" : "max-w-[280px]"
+                props.mobile ? "w-full" : "w-[280px]"
             }`}
         >
             <div

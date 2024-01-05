@@ -3,12 +3,20 @@ import Button from "./Button";
 import Select from "./Select";
 import Textarea from "./Textarea";
 import API, { get, responseValidator } from "../utils/api";
+import Loader from "./Loader";
 
 export default function TweetForm(props) {
-    const [formData, setFormData] = useState({
-        category: props.category ? props.category : "",
-        content: "",
-    });
+    const [formData, setFormData] = useState(
+        props.tweet
+            ? {
+                  category: props.tweet.category,
+                  content: props.tweet.content,
+              }
+            : {
+                  category: props.category ? props.category : "",
+                  content: "",
+              }
+    );
     const [errors, setErrors] = useState({
         category: "",
         content: "",
@@ -50,6 +58,7 @@ export default function TweetForm(props) {
                 <div>
                     {!props.category && (
                         <Select
+                            value={formData.category}
                             error={errors.category}
                             className="mb-4"
                             label="Category"
@@ -64,6 +73,7 @@ export default function TweetForm(props) {
                         />
                     )}
                     <Textarea
+                        value={formData.content}
                         error={errors.content}
                         className="mb-4"
                         label="Content"
@@ -73,11 +83,11 @@ export default function TweetForm(props) {
                         }}
                     />
                     <Button disabled={props.loading} onClick={handleSubmit}>
-                        Create tweet
+                        {props.tweet ? "Edit Tweet" : "Create tweet"}
                     </Button>
                 </div>
             ) : (
-                "Loading"
+                <Loader />
             )}
         </>
     );

@@ -8,6 +8,8 @@ import Layout from "./components/Layout";
 import Profile from "./pages/Profile";
 import Tweet from "./pages/Tweet";
 import CreateTweet from "./pages/CreateTweet";
+import Loader from "./components/Loader";
+import EditTweet from "./pages/EditTweet";
 
 export default function Router() {
     const user = useSelector((state) => state.auth.user);
@@ -29,13 +31,16 @@ export default function Router() {
                                 <Route path="/" element={<Home />} />
                                 <Route path="/tweet/create" element={<CreateTweet />} />
                                 <Route path="/tweet/:id" element={<Tweet />} />
+                                <Route path="/tweet/edit/:id" element={<EditTweet />} />
                                 <Route path="/profile" element={<Profile />} />
                             </Route>
                         </>
                     )}
                 </Routes>
             ) : (
-                <p>loading ...</p>
+                <div className="h-screen w-full">
+                    <Loader white />
+                </div>
             )}
         </>
     );
