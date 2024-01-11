@@ -35,6 +35,13 @@ export default function Home() {
                 <PencilIcon className="w-5 h-5 text-white" />
                 <p>What's in your mind ?</p>
             </Link>
+            <Link
+                target="_blank"
+                to="https://www.mahdisharifi.dev"
+                className="text-teal-500 mb-4 text-sm hover:text-teal-700"
+            >
+                &copy; Developed By Mahdi Sharifi
+            </Link>
             <div className="overflow-auto no-scrollbar h-full">
                 {!tweets ? (
                     <div className="h-full">
